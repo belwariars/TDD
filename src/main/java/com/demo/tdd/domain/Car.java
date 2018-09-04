@@ -3,12 +3,15 @@ package com.demo.tdd.domain;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Data
-@Entity(name = "CarDB")
+@Entity
+@Table(name = "car")
 @NoArgsConstructor
 public class Car {
 
@@ -16,8 +19,10 @@ public class Car {
   @GeneratedValue
   private Long id;
 
+  @Column(name = "name")
   private String name;
 
+  @Column(name = "type")
   private String type;
 
   public Car(String name, String type) {

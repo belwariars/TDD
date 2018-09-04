@@ -11,40 +11,52 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@RunWith(MockitoJUnitRunner.class) // not using springRunner, so springboot will not start
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+@RunWith(SpringRunner.class) // same as JUNIT
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 public class CarServiceTest {
 
-    @Mock // it is different from @MockBean as there is no spring involved in @Mock
-    private CarRepository carRepository;
+  @Autowired
+  private CarRepository carRepository;
 
-    @InjectMocks
-    private CarService carService;
+  @Mock
+  private CarService carService;
 
-    @Before
-    public void setUp() throws Exception {
-        carService = new CarService(carRepository);
-    }
+  @Before
+  public void setUp() throws Exception {
+    carService = new CarService(carRepository);
+  }
 
-    @Test
-    public void getCarDetails_returnCarInfo() {
-       given(carRepository.findByName("prius")).willReturn( new Car("prius","hybrid"));
+  @Test
+  public void getCarDetails_returnCarInfo() {
 
-       Car car = carService.getCarDetails("prius");
 
-       assertThat(car.getName()).isEqualTo("prius");
-       assertThat(car.getType()).isEqualTo("hybrid");
-    }
 
-    @Test(expected = CarNotFoundException.class) // have to write in cheatsheet if remove under bracket, will start throwing exception and giving error
-    public void getCarDetails_whenCarNotFound() throws Exception{
-        given(carRepository.findByName("prius")).willReturn(null);
+    List<Car> car2 = carService.getCarssDetails("prius");
 
-        Car car = carService.getCarDetails("prius");
-      Assertions.assertThat(car).isEqualTo(null);
-    }
+    Assertions.assertThat(car2.size()).isGreaterThan(1);
+
+  }
+
+
 
 }

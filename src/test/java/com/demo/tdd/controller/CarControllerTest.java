@@ -18,38 +18,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(CarController.class)// Will just wireup things needed for mvc test. If many controllers, we can specify their controller.class also
+@WebMvcTest(CarController.class)
 public class CarControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-    // integration testing(TddApplicationTests) will start spring boot application but mockmvc will just test controller
+  @Autowired
+  private MockMvc mockMvc;
 
-    @MockBean
-    private CarService carService; /* write that in carController you need @Autowired
-    public CarController(CarService carService) {
-        this.carService = carService;
-    } */
+  @MockBean
+  private CarService carService;
 
-    @Test
-    public void getCar_ShouldReturnCar() throws Exception {
+  @Test
+  public void getCar_ShouldReturnCar() throws Exception {
 
-        // even if we didn't had CarService class, it would still test controller as it mocks
-        given(carService.getCarDetails(anyString())).willReturn(new Car("prius","hybrid"));
+   // given(carService.getCarssDetails(anyString())).willReturn(new Car("prius","hybrid"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/cars/prius"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value("prius"))
-                .andExpect(jsonPath("type").value("hybrid"));
+    mockMvc.perform(MockMvcRequestBuilders.get("/cars/prius"))
+        .andExpect(status().isOk());
 
-    }
+  }
 
-    @Test
-    public void getCar_notFound() throws Exception{
-        given(carService.getCarDetails(anyString())).willThrow(new CarNotFoundException());
+  @Test
+  public void getCar_notFound() throws Exception{
+    given(carService.getCarssDetails(anyString())).willThrow(new CarNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/cars/toyota")).andExpect(status().isNotFound());
+    mockMvc.perform(MockMvcRequestBuilders.get("/cars/toyota"))
+        .andExpect(status().isNotFound());
 
-    }
+  }
 
 }

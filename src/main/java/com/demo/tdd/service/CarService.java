@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class CarService {
 
-
+  @Autowired
   private CarRepository carRepository;
 
   @Autowired
@@ -25,18 +25,19 @@ public class CarService {
 
   //The getCarDetails() call will first check the cache "cars" before actually invoking the method and then caching the result.
   // It caches the result
-  @Cacheable("cars")
+ /* @Cacheable("cars")
   public Car getCarDetails(String carName) {
     Car car = carRepository.findByName(carName);
     if (car == null) {
       throw new CarNotFoundException();
     }
     return car;
-  }
+  } */
 
-  public List<String> getCarssDetails(String carName) {
-    List<String> car = carRepository.findByNameCars(carName);
-    if (car == null) {
+  @Cacheable("cars")
+  public List<Car> getCarssDetails(String carName) {
+    List<Car> car = carRepository.findByName(carName);
+    if (car.size() == 0) {
       throw new CarNotFoundException();
     }
     return car;
